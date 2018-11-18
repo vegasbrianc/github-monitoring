@@ -4,7 +4,7 @@
 Here's a quick start to stand-up a Docker [Prometheus](http://prometheus.io/) stack containing Prometheus, Grafana and  [github-exporter](https://github.com/infinityworksltd/github-exporter) to collect and graph GitHub statistics.
 
 ## Pre-requisites
-Before we get started installing the Prometheus stack. Ensure you install the latest version of docker and [docker-compose](https://docs.docker.com/compose/install/) on your Docker host machine. This has also been tested with Docker for Mac and it works well.
+Before we starts, please installi the Prometheus stack. Ensure you install the latest version of docker and [docker-compose](https://docs.docker.com/compose/install/) on your #Docker host machine. This has also been tested with Docker for Mac and it works well.
 
 ## Installation
 Clone the project to your Docker host. 
