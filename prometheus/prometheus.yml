@@ -28,10 +28,49 @@ scrape_configs:
          - targets: ['localhost:9090']
 
 
-  - job_name: 'metrics'
-
-    # Override the global default and scrape targets from this job every 5 seconds.
-    scrape_interval: 5s
-
+  - job_name: 'speedtest'
+    metrics_path: /metrics
+    scrape_interval: 15m
+    scrape_timeout: 60s # running speedtest needs time to complete
+    
     static_configs:
-         - targets: ['metrics:9171']
+      - targets: ['speedtest:9696']
+
+  - job_name: 'ping'
+    metrics_path: /probe
+    scrape_interval: 5s
+    params:
+      module: [http_2xx]  # Look for a HTTP 200 response.
+    file_sd_configs:
+      - files:
+        - pinghosts.yaml
+    relabel_configs:
+      - source_labels: [__address__]
+        regex: '(.*);(.*);(.*);(.*)'  #first is the url, thus unique for instance
+        target_label: instance
+        replacement: $1
+      - source_labels: [__address__]
+        regex: '(.*);(.*);(.*);(.*)'  #second is humanname to use in charts
+        target_label: humanname
+        replacement: $2
+      - source_labels: [__address__]
+        regex: '(.*);(.*);(.*);(.*)'  #third state whether this is testing external or internal network
+        target_label: routing
+        replacement: $3
+      - source_labels: [__address__]
+        regex: '(.*);(.*);(.*);(.*)'  #fourth is which switch/router the device is connected to.
+        target_label: switching
+        replacement: $4
+      - source_labels: [instance]
+        target_label: __param_target
+      - target_label: __address__
+        replacement: ping:9115  # The blackbox exporter's real hostname:port.
+
+  - job_name: 'nodeexp'
+    static_configs:
+    - targets: ['nodeexp:9100']
+
+  - job_name: 'sonos'
+    static_configs:
+    - targets: ['192.168.1.42:1915']
+    
